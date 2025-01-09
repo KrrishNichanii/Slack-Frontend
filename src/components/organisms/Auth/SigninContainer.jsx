@@ -15,10 +15,10 @@ export const  SigninContainer = () => {
     const {onPending , isSuccess , signinMutation , error} = useSignin() ; 
     async function onSigninFormSubmit(e){
         e.preventDefault() ;
-        console.log('Signup form submitted ',signinForm);
+        // console.log('Signup form submitted ',signinForm);
 
         if(!signinForm.email || !signinForm.password) {
-            console.error('All fields are required');
+            // console.error('All fields are required');
             setValidationError({ message: 'All fields are required' });
             return;
         }

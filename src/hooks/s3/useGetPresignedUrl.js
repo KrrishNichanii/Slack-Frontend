@@ -14,6 +14,6 @@ export const useGetPresignedUrl = () => {
         isFetching , 
         isError , 
         error , 
-        
+        data: url
      }
 }

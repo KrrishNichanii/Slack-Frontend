@@ -18,7 +18,8 @@ export default function WorkspaceSidebar() {
        <WorkspaceSwitcher />
        <SidebarButton 
            Icon={HomeIcon}
-           label="Home"  
+           label="Home" 
+           handleClick={() => navigate('/home')} 
        />
 
        <SidebarButton 

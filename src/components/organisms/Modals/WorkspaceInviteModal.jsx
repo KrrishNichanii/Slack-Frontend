@@ -1,14 +1,22 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { useResetJoinCode } from "@/hooks/apis/workspaces/useResetJoinCode"
+import { useSendJoinCodeEmail } from "@/hooks/apis/workspaces/useSendJoinCodeEmail"
+import { useCurrentWorkspace } from "@/hooks/context/useCurrentWorkspac"
 import { useToast } from "@/hooks/use-toast"
 import { CopyIcon, LogIn, RefreshCcwIcon } from "lucide-react"
+import { useState } from "react"
 
 export const WorkspaceInviteModal = ({ workspaceName , workspaceId , joinCode ,openInviteModal , setOpenInviteModal}) => {
     const { toast } = useToast() ; 
-    const {isPending , resetJoinCodeMutation} = useResetJoinCode(workspaceId) ; 
+    const {isPending : isResetPending , resetJoinCodeMutation} = useResetJoinCode(workspaceId) ; 
+    const [email , setEmail] = useState('') ;  
 
-    async function handleCopy() {
+    const {isPending , isSuccess , sendJoinCodeEmailMutation} = useSendJoinCodeEmail() ; 
+
+    async function handleCopy(e) {
+        
         const inviteLink = `${joinCode}`
         await navigator.clipboard.writeText(inviteLink) ;
         
@@ -31,7 +39,18 @@ export const WorkspaceInviteModal = ({ workspaceName , workspaceId , joinCode ,o
             
         }
     }
-
+    
+    async function handleSubmit(e) {
+        e.preventDefault() ; 
+        console.log('Sending email ' , email);
+        await  sendJoinCodeEmailMutation({workspaceName , joinCode , email}) ;
+        
+        if(!isPending){
+            setEmail('') ; 
+            
+            setOpenInviteModal(false) ; 
+        }
+    }
 
     return (
         <Dialog open={openInviteModal} onOpenChange={setOpenInviteModal} >
@@ -49,21 +68,21 @@ export const WorkspaceInviteModal = ({ workspaceName , workspaceId , joinCode ,o
                     <p className="font-bold text-4xl uppercase">
                         {joinCode}
                     </p>
-
-                    <Button size='sm' variant='ghost' onClick={handleCopy}>
-                          Copy Code 
-                          <CopyIcon className="size-4 ml-2" />
-                    </Button>
-
-                    <a 
-                       href={`/workspaces/join/${workspaceId}`}
-                       target="_blank"
-                       rel="noreferrer"
-                       className="text-blue-500"
-                    >
-
-                        Redirect to Join Page
-                    </a>
+                    <form onSubmit={handleSubmit} className="space-y-4 w-[100%] flex flex-col items-center">
+                        <Input
+                            required 
+                            minLength={3}
+                            placeholder = "Put email of user you want to invite"
+                            value={email}
+                            onChange = {(e) => setEmail(e.target.value)}
+                            className='w-[50%]'
+                            type='email'
+                            disabled = {isPending}
+                            />
+                        <Button type='submit' size='sm' variant='outline' disabled={isPending}>
+                            Send email 
+                        </Button>
+                    </form>
                 </div>
 
                 <div className="flex  items-center justify-center w-full">

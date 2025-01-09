@@ -4,7 +4,7 @@ import 'quill/dist/quill.snow.css' ;
 import { Button } from '@/components/ui/button';
 import { PiTextAa } from 'react-icons/pi'
 import { Hint } from '../Hint/Hint';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, XIcon } from 'lucide-react';
 import { MdSend } from 'react-icons/md';
 
 function Editor({
@@ -16,14 +16,13 @@ function Editor({
     defaultValue
 }) {
 
-  const [text , setText] = useState('') ; 
   const [isToolbarVisible , setIsToolbarVisible] = useState(false) ;
   const containerRef = useRef() ; //reqd to initialize the editor
-  const submitRef = useRef() ; 
-  const disabledRef = useRef() ; 
-  const placeholderRef = useRef() ; 
+
   const quillRef = useRef() ; 
   const defaultValueRef = useRef() ; 
+  const [image , setImage] = useState(null) ; 
+  const imageInputRef = useRef(null) ; 
 
    function toggleToolbar() {
          setIsToolbarVisible(!isToolbarVisible) ; 
@@ -88,6 +87,28 @@ function Editor({
                         >
                             <div className='h-full ql-custom' ref={containerRef} />
 
+                            {
+                                image && (
+                                    <div className="p-2">
+                                         <div className="relative size-[60px] flex items-center justify-center group/image">
+                                             <button 
+                                                className='hidden group-hover/image:flex rounded-full bg-black/70 hover:bg-black absolute -top-2.5 -right-2.5 text-white size-6 z-[5] border-2 border-white items-center justify-center'
+                                                onClick={() => {
+                                                        setImage(null) ; 
+                                                        imageInputRef.current.value = '' ; 
+                                                }}
+                                             >
+                                                <XIcon className='size-4' />
+                                             </button>
+                                             <img 
+                                               className='rounded-xl overflow-hidden border object-cover'
+                                               src={URL.createObjectURL(image)}
+                                             />
+                                         </div>
+                                    </div>
+                                )
+                            }
+
                             <div className='flex px-2 pb-2 z-[5] gap-3'>
                                 <Hint label={!isToolbarVisible ? 'Show toolbar' : 'Hide toolbar'} side='bottom' align='center'>
                                     <Button
@@ -105,20 +126,30 @@ function Editor({
                                         size="iconSm"
                                         variant="ghost"
                                         disabled={false}
-                                        onClick={() => {}}
+                                        onClick={() => {imageInputRef.current.click()}}
                                     >
                                         <ImageIcon className='size-4' />
                                     </Button>
                                 </Hint>
+                                 
+                                <input
+                                  ref={imageInputRef} 
+                                  type="file" 
+                                  className='hidden' 
+                                  onChange={(e) => setImage(e.target.files[0])}
+                                />
 
                                 <Hint label="Send Message">
                                     <Button
                                         size="sm"
                                         className="ml-auto bg-[#007a6a] hover:bg-[#007a6a]/80 text-white"
                                         onClick={() => {
+
                                             const messageContent = JSON.stringify(quillRef.current?.getContents());                                            
-                                            onSubmit({ body: messageContent });
+                                            onSubmit({ body: messageContent , image });
                                             quillRef.current?.setText('');
+                                            setImage(null) ; 
+                                            imageInputRef.current.value = '' ;
                                         }}
                                         disabled={false}
                                     >

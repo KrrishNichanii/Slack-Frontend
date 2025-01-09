@@ -7,6 +7,7 @@ import VerificationInput from 'react-verification-input';
 
 function JoinPage() {
     const { workspaceId } = useParams() ; 
+
     const {joinWorkspaceMutation , isPending} = useJoinWorkspace(workspaceId) ; 
     const navigate = useNavigate() ; 
     const { toast } = useToast() ; 
@@ -23,7 +24,10 @@ function JoinPage() {
              navigate(`/workspaces/${workspaceId}`) ; 
         } catch (error) {
             console.log('Error adding member to workspace ',error);
-            
+            toast({
+                title: error?.message , 
+                variant: "destructive",
+            })
         }
         
     }
@@ -65,8 +69,8 @@ function JoinPage() {
                variant='outline'
                disabled={isPending}
             >
-                  <Link to={`/workspaces/${workspaceId}`}>
-                     Back to the workspace
+                  <Link to={`/home`}>
+                     Back to Home
                   </Link>
             </Button>
         </div>

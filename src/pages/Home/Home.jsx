@@ -1,30 +1,61 @@
 import UserButton from '@/components/atoms/UserButton/UserButton'
+import { Button } from '@/components/ui/button';
 import { useFetchWorkspace } from '@/hooks/apis/workspaces/useFetchWorkspace'
 import { useCreateWorkspaceModal } from '@/hooks/context/useCreateWorkspaceModal';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import {AppSidebar} from '@/components/organisms/Home/Home.tsx'
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { useGetRecentWorkspaces } from '@/hooks/apis/workspaces/useGetRecentWorkspaces';
+import { Frame, Map } from 'lucide-react';
+import { useAuth } from '@/hooks/context/useAuth';
+import { FaProjectDiagram } from 'react-icons/fa';
+import { AiOutlineHistory } from 'react-icons/ai';
+import Hero from '@/components/organisms/Hero/Hero';
 
 function Home() {
   const {setOpenCreateWorkspaceModal} = useCreateWorkspaceModal() ; 
-  const { isFetching  ,workspaces } = useFetchWorkspace() ; 
-  const navigate = useNavigate() ; 
+  const { isFetching  ,workspaces , error ,isSuccess} = useFetchWorkspace() ;
+  const {isFetching : isFetchingRecentWorkspaces , recentWorkspaces} = useGetRecentWorkspaces() ; 
+  const { auth } = useAuth() ; 
+  const [items , setItems] = useState([]) ;
+  const {logout} = useAuth() ; 
+   
+  const navigate = useNavigate() ;
+  
+
   useEffect(() => {
-    if(isFetching) return  ;
-    console.log('Workspaces downloaded is  ',workspaces);
-    
-    if(!workspaces || workspaces.length === 0){
-      console.log('No workspaces found , create or join one ');
-      setOpenCreateWorkspaceModal(true) ; 
-    } else{
-        navigate(`/workspaces/${workspaces[0]._id}`) ; 
-    }
-
-  } ,[isFetching , workspaces , navigate]) ; 
-
+    setItems([
+      {
+        title : 'Workspaces' ,
+        url:'#' ,
+        icon: FaProjectDiagram ,
+        isActive: true , 
+        items: workspaces?.map((workspace) => ({title : workspace?.name , url:`workspaces/${workspace?._id}`})) ,
+      } ,
+  
+      {
+        title : 'Recent Workspaces' ,
+        url:'#' ,
+        icon: AiOutlineHistory ,
+        isActive: true , 
+        items: recentWorkspaces?.map((workspace) => ({title : workspace?.name , url:`workspaces/${workspace?._id}`})) ,
+      } ,
+    ])
+    if(!isFetching && !isSuccess && error){
+      if(error.status === 403){
+          logout() ; 
+          navigate('/auth/signin') ; 
+      }
+  }
+  } ,[isSuccess , error , workspaces , recentWorkspaces])
+   
   return (
     <>
-      <div>Home</div>
-      <UserButton/>
+      <SidebarProvider>
+        <AppSidebar items={items}  />
+        <Hero />
+      </SidebarProvider>
     </>
   )
 }
