@@ -1,16 +1,30 @@
-import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { getDirectMessageChannelIdRequest } from '@/apis/channels';
+import { useGetDirectMessageChannelId } from '@/hooks/apis/channels/useGetDirectMessageChannelId';
+import { useAuth } from '@/hooks/context/useAuth';
+import { Loader2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
 
 function DirectMessages() {
 
     const {workspaceId , memberId} = useParams() ; 
+    const {isFetching , channelId : directMessageChannelId} = useGetDirectMessageChannelId({receiverId: memberId , workspaceId}) ; 
+    const navigate = useNavigate() ; 
+
     useEffect(() => {
         
-        console.log('WID & MID ',workspaceId , memberId);        
-    } , []) ;
+        console.log('DM Ch ',directMessageChannelId);
+        
+        if(directMessageChannelId){
+           navigate(`/workspaces/${workspaceId}/channels/${directMessageChannelId}`) ; 
+        }
+
+    } , [directMessageChannelId , isFetching]) ;
 
   return (
-    <div>DirectMessages</div>
+    <div className="">
+      <Loader2 className='animate-spin size-4' />
+    </div>
   )
 }
 

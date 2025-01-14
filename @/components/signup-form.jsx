@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom"
 import { LucideLoader2, TriangleAlert } from "lucide-react"
 import { FaCheck } from "react-icons/fa"
 
-export function LoginForm({
-  className,
-  signinForm ,
-  setSigninForm,
-  validationError,
-  isSuccess,
-  error,
-  onSigninFormSubmit,
-  onPending ,
-  ...props 
+export function SignupForm({
+    className,
+    error ,
+    isPending ,
+    isSuccess ,
+    signupForm  ,
+    setSignupForm ,
+    validationError ,
+    onSignupFormSubmit ,
+    ...props 
 }) {
 
   const navigate = useNavigate() ; 
@@ -24,12 +24,12 @@ export function LoginForm({
     (<form 
         className={cn("flex flex-col gap-8", className)} 
         {...props}
-        onSubmit={onSigninFormSubmit}
+        onSubmit={onSignupFormSubmit}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <h1 className="text-2xl font-bold">Create an account</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
+          Enter your email and username to create an account
         </p>
       </div>
       <div className="flex flex-col gap-8">
@@ -64,43 +64,69 @@ export function LoginForm({
             type="email" 
             placeholder="m@example.com" 
             required 
-            disabled={onPending}
-            onChange ={(e) => setSigninForm({...signinForm , email: e.target.value})}
-            value = { signinForm?.email}
+            disabled={isPending}
+            onChange ={(e) => setSignupForm({...signupForm , email: e.target.value})}
+            value = { signupForm?.email}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 mt-3">
+          <Label htmlFor="email">Username</Label>
+          <Input 
+            id="username" 
+            type="text" 
+            placeholder="username" 
+            required 
+            disabled={isPending}
+            onChange ={(e) => setSignupForm({...signupForm , username: e.target.value})}
+            value = { signupForm?.username}
           />
         </div>
 
         <div className="flex flex-col gap-2 mt-3">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
-            <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
-              Forgot your password?
-            </a>
           </div>
           <Input 
             id="password" 
             type="password" 
             required 
-            disabled = {onPending}
-            onChange ={(e) => setSigninForm({...signinForm , password: e.target.value})}
-            value = { signinForm?.password}
+            disabled = {isPending} 
+            onChange ={(e) => setSignupForm({...signupForm , password: e.target.value})}
+            value = { signupForm?.password}
+            placeholder = 'Password'
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 mt-3">
+          <div className="flex items-center">
+            <Label htmlFor="confirm-password">Confirm Password</Label>
+          </div>
+          <Input 
+            id="confirm-password" 
+            type="password" 
+            required 
+            disabled = {isPending} 
+            onChange ={(e) => setSignupForm({...signupForm , confirmPassword: e.target.value})}
+            value = { signupForm?.confirmPassword}
+            placeholder = 'Confirm Password'
           />
         </div>
          
          <div className="mt-3">
-              <Button disabled = {onPending} type="submit" className="w-full">
-                Login
+              <Button disabled = {isPending} type="submit" className="w-full">
+                Sign up
               </Button>
          </div>
          
       </div>
       <div className="mt-3 text-center text-sm">
-        Don&apos;t have an account?{" "}
+        Already have an account?{" "}
          <span 
-          onClick={() => navigate('/auth/signup')}
+          onClick={() => navigate('/auth/signin')}
           className="text-sky-600 font-semibold hover:underline cursor-pointer"
           >
-              Sign Up
+              Sign In
           </span>
       </div>
     </form>)

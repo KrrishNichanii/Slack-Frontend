@@ -3,6 +3,7 @@ import { UserItem } from '@/components/atoms/UserItem/UserItem';
 import WorkspacePanelHeader from '@/components/molecules/Workspace/WorkspacePanelHeader';
 import WorkspacePanelSection from '@/components/molecules/Workspace/WorkspacePanelSection';
 import { useGetWorkspaceById } from '@/hooks/apis/workspaces/useGetWorkspaceById';
+import { useAuth } from '@/hooks/context/useAuth';
 import { useCreateChannelModal } from '@/hooks/context/useCreateChannelModal';
 import { AlertTriangleIcon, HashIcon, Loader, MessageSquareTextIcon, SendHorizonalIcon } from 'lucide-react';
 import React from 'react'
@@ -10,6 +11,7 @@ import { useParams } from 'react-router-dom'
 
 function WorkspacePanel() {
     const {workspaceId} = useParams() ;
+    const { auth } = useAuth() ; 
 
     const { workspace ,isFetching , error , isSuccess } = useGetWorkspaceById(workspaceId) ;
     const {setOpenCreateChannelModal} = useCreateChannelModal() ;
@@ -61,14 +63,15 @@ function WorkspacePanel() {
                 onIconClick={() => {setOpenCreateChannelModal(true)}}         
           >
           {
-                workspace?.channels?.map((channel) => (
-                    <SideBarItem
+                workspace?.channels?.map((channel) => { 
+                    if(channel?.name !== 'DM')
+                    return <SideBarItem
                       key={channel._Id}
                       label={channel.name}
                       icon={HashIcon}
                       id={channel._id}
                     />
-                ))
+                })
             }
           </WorkspacePanelSection>
 
@@ -77,6 +80,7 @@ function WorkspacePanel() {
               onIconClick={() => {}}
           >
              {workspace?.members?.map((member) => {
+                if(auth?.user?._id !== member?.memberId?._id)
                 return <UserItem
                      key = {member._id}
                      label = {member.memberId.username}

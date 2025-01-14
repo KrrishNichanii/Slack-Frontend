@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 
 
 const userItemVariants = cva(
-    'flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden' ,
+    'flex items-center gap-1.5 justify-start font-normal my-2 h-7 px-4 text-sm overflow-hidden' ,
     {
         variants: {
             variant : {

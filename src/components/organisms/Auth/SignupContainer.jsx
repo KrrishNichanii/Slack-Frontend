@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SignupCard } from "./SignupCard";
 import { useSignUp } from "@/hooks/apis/auth/useSignup";
 import { useNavigate } from "react-router-dom";
+import Signup from "./Signup";
 
 export const SignupContainer = () => {
     const [signupForm ,setSignupForm] = useState({
@@ -49,7 +50,16 @@ export const SignupContainer = () => {
     },[isSuccess,navigate])
 
     return (
-        <SignupCard 
+        // <SignupCard  uncomment for orginal signup card
+        //     error={error}
+        //     isPending={isPending}
+        //     isSuccess={isSuccess}
+        //     signupForm={signupForm} 
+        //     setSignupForm={setSignupForm} 
+        //     validationError={validationError}
+        //     onSignupFormSubmit={onSignupFormSubmit}
+        // />
+        <Signup
             error={error}
             isPending={isPending}
             isSuccess={isSuccess}

@@ -15,8 +15,10 @@ import Signin from "./components/organisms/Auth/Signin"
 export const AppRoutes = () => {
     return (
         <Routes>
-            <Route path='/auth/signup' element={<Auth><SignupContainer/></Auth>} />
-            <Route path='/auth/signin' element={<Auth><SigninContainer/></Auth>} />
+            {/* <Route path='/auth/signup' element={<Auth><SignupContainer/></Auth>} /> */}
+            {/* <Route path='/auth/signin' element={<Auth><SigninContainer/></Auth>} /> */}
+            <Route path='/auth/signup' element={<SignupContainer/>}/>
+            <Route path='/auth/signin' element={<SigninContainer/>} />
             <Route path='/home' element={<ProtectedRoute> <Home/> </ProtectedRoute>} />
             <Route path='/workspaces/:workspaceId' element={<ProtectedRoute> <WorkspaceLayout> <ChannelDirector/> </WorkspaceLayout> </ProtectedRoute>} />
             <Route path='/workspaces/:workspaceId/channels/:channelId' element={<ProtectedRoute> <WorkspaceLayout> <Channel/> </WorkspaceLayout> </ProtectedRoute>} />

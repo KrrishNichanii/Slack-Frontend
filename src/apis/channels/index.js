@@ -34,3 +34,17 @@ export const getPaginatedMessages = async ({channelId , token , limit , offset})
         console.log('Error in getPaginatedMessagesRequest', error);
        }
 }
+
+export const getDirectMessageChannelIdRequest = async ({receiverId , token , workspaceId}) => {
+    try {
+        const response = await axios.get(`/direct-messages/${receiverId}/${workspaceId}`,{
+            headers: {
+                'x-access-token': token , 
+            }
+        }); 
+
+        return response?.data?.data ; 
+    } catch (error) {
+        console.log('Error in getDirectMessageChannelIdRequest ', error);
+    }
+}

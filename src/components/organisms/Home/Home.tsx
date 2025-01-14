@@ -163,7 +163,7 @@ export function AppSidebar({items }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar className="bg-slack-dark text-white" collapsible="icon" >
       <SidebarHeader className="bg-slack-dark text-white flex">
         <div className="flex items-center gap-2">
-        <Logo />
+        <Logo className='h-10 w-10 object-contain rounded-full' />
         </div>
       </SidebarHeader>
       <SidebarContent className="bg-slack-dark text-white">
