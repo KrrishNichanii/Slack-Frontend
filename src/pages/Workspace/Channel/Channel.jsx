@@ -1,14 +1,16 @@
+import { getUserByIdRequest } from '@/apis/users';
 import ChannelHeader from '@/components/molecules/Channel/ChannelHeader';
 import ChatInput from '@/components/molecules/ChatInput/ChatInput';
 import Message from '@/components/molecules/Message/Message';
 import { useGetChannelById } from '@/hooks/apis/channels/useGetChannelById';
 import { useGetChannelMessages } from '@/hooks/apis/channels/useGetChannelMessages';
+import { useAuth } from '@/hooks/context/useAuth';
 import { useChannelMessages } from '@/hooks/context/useChannelMessages';
 import { useSocket } from '@/hooks/context/useSocket';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2Icon, TriangleAlertIcon } from 'lucide-react';
-import React, { useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 
 function Channel() {
     const { channelId } = useParams() ; 
@@ -16,7 +18,23 @@ function Channel() {
     const {joinChannel} = useSocket() ; 
     const queryClient = useQueryClient() ; 
     const messageContainerListRef = useRef(null) ; 
+    
+    const [dmName , setDmName] = useState('') ; 
+    const location = useLocation() ; 
+    // const { receiverId } = location?.state ; 
+    const { auth } = useAuth() ; 
 
+    useEffect(() => {
+      async function getUser() {
+        const receiver = await getUserByIdRequest({userId: location?.state?.receiverId , token: auth?.token}) ;
+        setDmName(receiver?.username)
+      }
+      
+      if(location?.state?.receiverId){
+        getUser() ; 
+      }
+    } ,[location.state])
+    
     const {messages , isSuccess , isError: isMessageError , isFetching: isMessageFetching} = useGetChannelMessages(channelId) ; 
     const {setMessageList , messageList} = useChannelMessages() ;
     useEffect(() => {
@@ -60,7 +78,7 @@ function Channel() {
     
       return (
     <div className='flex flex-col h-full'>
-        <ChannelHeader name={channelDetails?.name} />
+        <ChannelHeader name={location?.state?.receiverId ?  `${dmName}${'/'}}` : channelDetails?.name} />
          <div ref={messageContainerListRef} className="flex-5 overflow-y-auto p-5 gap-y-2">
             {messageList?.map((message) => {
                 return <Message

@@ -15,7 +15,7 @@ function ChannelHeader({ name }) {
                    className='text-lg font-semibold px-2 w-auto overflow-hidden my'
                  >
                     <span>
-                        # {name}
+                        {   name.split('/').length == 2 ? name.split('/')[0] : `# ${name}` } 
                     </span>
                     <FaChevronDown className='size-3 ml-2' />
                  </Button>

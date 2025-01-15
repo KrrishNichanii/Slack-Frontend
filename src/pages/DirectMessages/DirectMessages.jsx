@@ -16,7 +16,11 @@ function DirectMessages() {
         console.log('DM Ch ',directMessageChannelId);
         
         if(directMessageChannelId){
-           navigate(`/workspaces/${workspaceId}/channels/${directMessageChannelId}`) ; 
+           navigate(`/workspaces/${workspaceId}/channels/${directMessageChannelId}`, 
+            { state: {
+               receiverId : memberId , 
+            }
+            }) ; 
         }
 
     } , [directMessageChannelId , isFetching]) ;
